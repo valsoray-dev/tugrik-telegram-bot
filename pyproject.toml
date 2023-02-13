@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "tugrik-telegram-bot"
+version = "0.1.0"
+description = "A small telegram bot that sends the exchange rate MNT - UAH every day at 5:00 UTC."
+authors = ["Yaroslav-Petuhov <ineedhelp@gms.us>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "tugrik_telegram_bot"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^2.23.1"
+apscheduler = "^3.9.1.post1"
+motor = "^3.1.1"
+python-dotenv = "^0.21.0"
+loguru = "^0.6.0"
+
+[tool.poetry.group.dev.dependencies]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
