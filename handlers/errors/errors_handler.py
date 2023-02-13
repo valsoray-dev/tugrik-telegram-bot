@@ -19,7 +19,7 @@ async def error_handler(update: types.Update, error: Exception):
             return True
         case _:
             exception = traceback.format_exc()
-            logger.error(exception)
+            logger.error("\n" + exception)
             await bot.send_message(
                 config.ADMIN_ID,
                 f"<b>Произошла непредвиденная ошибка!</b>\n\nКод ошибки:\n<code>{exception}</code>",
