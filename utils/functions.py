@@ -1,18 +1,17 @@
 """Functions"""
-import os
+import json
 import re
 from base64 import b64encode
 from datetime import datetime, timezone
 
 import aiohttp
 from aiogram import Bot
-from loguru import logger
 from pymongo.collection import Collection
 
 from keyboards import keyboard
 
 
-async def get_xe_key() -> None:
+async def get_xe_key() -> str:
     """..."""
 
     base_url = "https://www.xe.com"
@@ -29,10 +28,13 @@ async def get_xe_key() -> None:
             app_js_body = str(await app_js.read())
             key = re.findall(key_regex, app_js_body)[0]
 
-    os.environ["XE_KEY"] = f"lodestar:{key}"
-    logger.debug(
-        "The key for authorization on the site is saved as environment variable."
-    )
+    # os.environ["XE_KEY"] = f"lodestar:{key}"
+    # logger.debug(
+    #     "The key for authorization on the site is saved as environment variable."
+    # )
+
+    key = f"lodestar:{key}"
+    return key
 
 
 async def get_currency() -> float:
@@ -42,16 +44,17 @@ async def get_currency() -> float:
         currency (float): `1` UAH -> `currency` MNT
     """
 
-    auth = b64encode(bytes(os.getenv("XE_KEY"), encoding="utf-8"))
+    auth = b64encode(bytes(await get_xe_key(), encoding="utf-8"))
     headers = {"Authorization": f"Basic {str(auth)[2:-1]}"}
 
     async with aiohttp.ClientSession() as session:
         async with session.get(
             "https://www.xe.com/api/protected/midmarket-converter/", headers=headers
         ) as request:
-            json: dict = await request.json()
-            mnt: float = json["rates"]["MNT"]
-            uah: float = json["rates"]["UAH"]
+            text = await request.read()
+            data = json.loads(text)
+            mnt = data["rates"]["MNT"]
+            uah = data["rates"]["UAH"]
 
     return mnt / uah
 

@@ -5,7 +5,6 @@ description = "A small telegram bot that sends the exchange rate MNT - UAH every
 authors = ["Yaroslav-Petuhov <ineedhelp@gms.us>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "tugrik_telegram_bot"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
