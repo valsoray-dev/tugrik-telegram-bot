@@ -1,7 +1,5 @@
 """Errors handler"""
 
-import traceback
-
 from aiogram import exceptions, types
 from loguru import logger
 
@@ -10,7 +8,7 @@ from loader import bot, dp
 
 
 @dp.errors_handler()
-async def error_handler(update: types.Update, error: Exception):
+async def error_handler(update: types.Update, error: BaseException):
     """Error handler"""
 
     match error:
@@ -18,11 +16,10 @@ async def error_handler(update: types.Update, error: Exception):
             logger.log("User [@%s] has blocked bot.", update.message.from_user.username)
             return True
         case _:
-            exception = traceback.format_exc()
-            logger.error("\n" + exception)
+            logger.exception(error)
             await bot.send_message(
                 config.ADMIN_ID,
-                f"<b>Произошла непредвиденная ошибка!</b>\n\nКод ошибки:\n<code>{exception}</code>",
+                f"<b>Произошла непредвиденная ошибка!</b>\n\n<code>{error.__class__.__name__}: {error}</code>",
             )
             await bot.send_message(
                 update.message.from_id,
